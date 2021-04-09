@@ -1,0 +1,11 @@
+[build-system]
+requires = ["flit_core >=2,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.metadata]
+module = "src"
+author = "Ian Andrich"
+author-email = "iandrich87+github@gmail.com"
+home-page = "https://github.com/ian-andrich/SqliteShelve"
+description-file = "README.md"
+
