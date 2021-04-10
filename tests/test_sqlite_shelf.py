@@ -4,7 +4,7 @@ from ..src import SqliteShelve
 
 @pytest.fixture
 def blank_shelf():
-    shelf = SqliteShelve(":memory:", "test")
+    shelf = SqliteShelve(":memory:", "test", sync_count=10)
     shelf.open()
     yield shelf
     shelf.close()
@@ -44,3 +44,25 @@ def test_deletion(loaded_shelf):
 def test_regex(loaded_shelf):
     results = dict(loaded_shelf.regex("5$"))
     assert "5" in results
+
+
+def test_sync_raises():
+    shelf = SqliteShelve(":memory:", "test")
+    with pytest.raises(ValueError):
+        shelf.sync()
+
+
+def test_context_manager():
+    shelf = SqliteShelve(":memory:", "test")
+    with shelf:
+        pass
+
+
+def test_getter_raises_key_error(loaded_shelf):
+    with pytest.raises(KeyError):
+        loaded_shelf["a"]
+
+
+def test_sync_strat_raises_valueerror_on_low_count():
+    with pytest.raises(ValueError):
+        shelf = SqliteShelve(":memory:", "test", sync_count=-10)
