@@ -33,7 +33,7 @@ jobs:
                   python -m pip install pytest coverage
             - name: Run tox
               run: |
-                  make tox
+                  python -m tox
             - name: Upload coverage to Codecov
               uses: codecov/codecov-action@v1
               if: contains(env.USING_COVERAGE, matrix.os)
