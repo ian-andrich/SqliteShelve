@@ -24,13 +24,13 @@ Examples:
 
 .. testcode::
 
-   from src import SqliteShelve
+   from src import SqlitePickleShelve
 
 .. testcode::
 
    table_name = "machomanrandysavage"
    filename = ":memory:"
-   demo_shelf = SqliteShelve(filename, table_name)
+   demo_shelf = SqlitePickleShelve(filename, table_name)
    with demo_shelf:
       for num in range(100):
          key = f"{num}"

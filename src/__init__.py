@@ -1,10 +1,10 @@
 """
 Nominal docstring for tox purposes.
 """
-from .pickle_shelf import SqliteShelve
+from .pickle_shelf import SqlitePickleShelve
 
 
 __all__ = [
-    "SqliteShelve",
+    "SqlitePickleShelve",
 ]
-__version__ = "0.1.5"
+__version__ = "0.2.0"
