@@ -14,6 +14,9 @@ It has been written because the shelf backends are hard to install/configure on 
 Further, the dumb backend is slow.
 10 insertions / second slow on my machine with an SSD drive.
 
+This module gets close to 70,000 insertions per second writing to disk.
+Individual key lookups reach about 10,000 key lookups per second reading from disk.
+
 Where the shelf API is not adhered to it is because, we cannot assume we can fit all data in memory.  
 The items and keys methods of the shelf API both assume so.
 
@@ -26,7 +29,8 @@ Examples:
 .. testcode::
 
    table_name = "machomanrandysavage"
-   demo_shelf = SqliteShelve(":memory:", table_name)
+   filename = ":memory:"
+   demo_shelf = SqliteShelve(filename, table_name)
    with demo_shelf:
       for num in range(100):
          key = f"{num}"
