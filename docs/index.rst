@@ -60,6 +60,29 @@ Examples:
    Key not found!
    [('34', 'Hello 34')]
 
+The JsonSqliteShelf follows a similar format.
+
+.. testcode::
+   from src import JsonSqliteShelve
+
+.. testcode::
+
+   table_name = "machomanrandysavage"
+   filename = ":memory:"
+   demo_shelf = SqlitePickleShelve(filename, table_name)
+   with demo_shelf:
+      for num in range(100):
+         key = f"{num}"
+         val = {"a": f"Hello {num}"}
+
+         # Load the data into the shelf.
+         demo_shelf[key] = val
+      print(demo_shelf["42"]["a"])
+
+.. testoutput::
+   
+   Hello 42
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
