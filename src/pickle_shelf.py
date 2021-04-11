@@ -49,12 +49,16 @@ class SqliteShelve(ShelfBase):
         tablename,
         sync_strat=SyncStrategy,
         sync_count: int = 10000,
+        loader=pickle.loads,
+        dumper=pickle.dumps,
     ):
         self.name = name
         self.tablename = tablename
         self.__conn__: t.Optional[sqlite3.Connection] = None
         self.__initializeddb__ = False
         self.__sync_strat__ = SyncStrategy(self, count=sync_count)
+        self._loads = loader
+        self._dumps = dumper
 
     def sync(self):
         if self.__conn__ is None:
@@ -67,13 +71,13 @@ class SqliteShelve(ShelfBase):
             result = self.__conn__.execute(
                 f"SELECT val FROM {self.tablename} WHERE key=?", (key,)
             ).fetchone()
-            value = pickle.loads(result[0])
+            value = self._loads(result[0])
             return value
         except Exception:
             raise KeyError(f"Key {key} not found.")
 
     def __setitem__(self, key: str, val: t.Any):
-        pickled_val = pickle.dumps(val)
+        pickled_val = self._dumps(val)
         upsert_statement = (
             f"INSERT INTO {self.tablename} (key, val) VALUES"
             f" (?, ?) ON CONFLICT(key) DO UPDATE SET val=?"
@@ -144,7 +148,7 @@ class SqliteShelve(ShelfBase):
         assert self.__conn__ is not None
         cursor = self.__conn__.execute(query)
         for result in cursor:
-            yield (result[0], pickle.loads(result[1]))
+            yield (result[0], self._loads(result[1]))
 
     def regex(self, regex: str) -> t.Iterator[t.Tuple[str, t.Any]]:
         """
@@ -154,4 +158,4 @@ class SqliteShelve(ShelfBase):
         query = (f"SELECT key, val FROM {self.tablename} WHERE key REGEXP ?", (regex,))
         assert self.__conn__ is not None
         for r in self.__conn__.execute(*query):
-            yield (r[0], pickle.loads(r[1]))
+            yield (r[0], self._loads(r[1]))
